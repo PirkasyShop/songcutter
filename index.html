@@ -14,12 +14,9 @@
             color: white;
             padding: 35px;
             display: flex;
-            justify-content: space-between;
-        }
-
-        .content {
-            flex: 1;
-            padding: 0 20px;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
         }
 
         .container {
@@ -27,12 +24,17 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 90%;
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .ad-section {
-            width: 300px;
+        .ad-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         input, button {
@@ -48,10 +50,12 @@
         }
 
         button {
+            background: #FFE700;
             cursor: pointer;
             font-weight: bold;
             font-size: 18px;
             margin-top: 35px;
+            margin-bottom: 20px;
         }
 
         audio {
@@ -88,10 +92,18 @@
             color: yellow;
         }
 
+        .slider-container input[type="range"] {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            height: 5px;
+            background: white;
+            border-radius: 5px;
+            outline: none;
+        }
+
         .footer {
-            text-align: center;
-            font-size: 12px;
             margin-top: 30px;
+            font-size: 12px;
         }
 
         .footer a {
@@ -99,37 +111,49 @@
             text-decoration: none;
             margin: 0 10px;
         }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .ad-container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- إعلان الجهة اليسرى -->
-    <div class="ad-section">
+
+    <!-- Left Ads -->
+    <div class="ad-container" id="left-ads">
         <script async="async" data-cfasync="false" src="//pl26107703.effectiveratecpm.com/6f2e75b40bdbb008aca8ce5f20fe930f/invoke.js"></script>
         <div id="container-6f2e75b40bdbb008aca8ce5f20fe930f"></div>
     </div>
 
-    <div class="content">
-        <div class="container">
-            <h2>Song Cutter</h2>
-            <input type="file" id="audioInput" accept="audio/*">
-            <audio id="audioPlayer" controls></audio>
+    <!-- Main Content -->
+    <div class="container">
+        <h2>Song Cutter</h2>
+        <input type="file" id="audioInput" accept="audio/*">
+        <audio id="audioPlayer" controls></audio>
 
-            <div class="slider-wrapper">
-                <div class="slider-container">
-                    <span class="slider-label">Open</span>
-                    <input type="range" id="startTime" min="0" step="0.1" value="0">
-                    <span id="startTimeDisplay">00:00</span>
-                </div>
-
-                <div class="slider-container">
-                    <span class="slider-label">Stop</span>
-                    <input type="range" id="endTime" min="0" step="0.1" value="0">
-                    <span id="endTimeDisplay">00:00</span>
-                </div>
+        <div class="slider-wrapper">
+            <div class="slider-container">
+                <span class="slider-label">Open</span>
+                <input type="range" id="startTime" min="0" step="0.1" value="0">
+                <span id="startTimeDisplay">00:00</span>
             </div>
 
-            <button id="downloadButton" disabled>Cut & Download</button>
+            <div class="slider-container">
+                <span class="slider-label">Stop</span>
+                <input type="range" id="endTime" min="0" step="0.1" value="0">
+                <span id="endTimeDisplay">00:00</span>
+            </div>
         </div>
+
+        <button id="downloadButton" disabled>Cut & Download</button>
 
         <footer class="footer">
             <a href="privacy.html">Privacy Policy</a> | 
@@ -138,8 +162,8 @@
         </footer>
     </div>
 
-    <!-- إعلان الجهة اليمنى -->
-    <div class="ad-section">
+    <!-- Right Ads -->
+    <div class="ad-container" id="right-ads">
         <script async="async" data-cfasync="false" src="//pl26107703.effectiveratecpm.com/6f2e75b40bdbb008aca8ce5f20fe930f/invoke.js"></script>
         <div id="container-6f2e75b40bdbb008aca8ce5f20fe930f"></div>
     </div>
