@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Song Cutter</title>
@@ -13,12 +14,7 @@
             background: #121212;
             color: white;
             padding: 35px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
         }
-
         .container {
             background: #1e1e1e;
             padding: 20px;
@@ -26,17 +22,11 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
             max-width: 90%;
             width: 500px;
+            margin: 20px auto;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
-        .ad-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
         input, button {
             padding: 10px;
             border-radius: 5px;
@@ -48,7 +38,6 @@
             max-width: 300px;
             margin-top: 20px;
         }
-
         button {
             background: #FFE700;
             cursor: pointer;
@@ -57,14 +46,12 @@
             margin-top: 35px;
             margin-bottom: 20px;
         }
-
         audio {
             width: 100%;
             margin-top: 30px;
             background: #FFE700;
             border-radius: 5px;
         }
-
         .slider-wrapper {
             display: flex;
             flex-direction: column;
@@ -73,7 +60,6 @@
             gap: 5px;
             color: yellow;
         }
-
         .slider-container {
             display: flex;
             align-items: center;
@@ -85,14 +71,12 @@
             gap: 5px;
             margin-top: 25px;
         }
-
         .slider-label {
             font-size: 14px;
             font-weight: bold;
             color: yellow;
         }
-
-        .slider-container input[type="range"] {
+.slider-container input[type="range"] {
             flex-grow: 1;
             -webkit-appearance: none;
             height: 5px;
@@ -100,45 +84,43 @@
             border-radius: 5px;
             outline: none;
         }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: black;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
 <!-- Ad iframe (right side) -->
         <div class="ad-container" style="float: right;">
             <iframe src="ads.html" style="border: none; width: 300px; height: 600px;"></iframe>
         </div>
-        
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-        }
 
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
 
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-                align-items: center;
-            }
 
-            .ad-container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-        }
+.footer {
+    position: center;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+margin-top: 30px;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+
+
+
     </style>
 </head>
 <body>
-
-    <!-- Left Ads -->
-    <div class="ad-container" id="left-ads">
-        <script async="async" data-cfasync="false" src="//pl26107703.effectiveratecpm.com/6f2e75b40bdbb008aca8ce5f20fe930f/invoke.js"></script>
-        <div id="container-6f2e75b40bdbb008aca8ce5f20fe930f"></div>
-    </div>
-
-    <!-- Main Content -->
     <div class="container">
         <h2>Song Cutter</h2>
         <input type="file" id="audioInput" accept="audio/*">
@@ -159,19 +141,172 @@
         </div>
 
         <button id="downloadButton" disabled>Cut & Download</button>
-
-        <footer class="footer">
-            <a href="privacy.html">Privacy Policy</a> | 
-            <a href="terms.html">Terms of Service</a> |
-            © 2025
-        </footer>
     </div>
 
-    <!-- Right Ads -->
-    <div class="ad-container" id="right-ads">
-        <script async="async" data-cfasync="false" src="//pl26107703.effectiveratecpm.com/6f2e75b40bdbb008aca8ce5f20fe930f/invoke.js"></script>
-        <div id="container-6f2e75b40bdbb008aca8ce5f20fe930f"></div>
-    </div>
+    <script>
+        let audioBuffer;
+        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+
+        document.getElementById('audioInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            document.getElementById('audioPlayer').src = url;
+
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            reader.onload = function(e) {
+                audioContext.decodeAudioData(e.target.result, buffer => {
+                    audioBuffer = buffer;
+                    document.getElementById('startTime').max = buffer.duration;
+                    document.getElementById('endTime').max = buffer.duration;
+                    document.getElementById('endTime').value = buffer.duration;
+                    document.getElementById('endTimeDisplay').textContent = formatTime(buffer.duration);
+                    document.getElementById('downloadButton').disabled = false;
+                });
+            };
+        });
+
+        document.getElementById('startTime').addEventListener('input', function () {
+            document.getElementById('startTimeDisplay').textContent = formatTime(parseFloat(this.value));
+        });
+
+        document.getElementById('endTime').addEventListener('input', function () {
+            document.getElementById('endTimeDisplay').textContent = formatTime(parseFloat(this.value));
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', async function() {
+            if (!audioBuffer) return alert('Please upload an audio file first.');
+
+            const startTime = parseFloat(document.getElementById('startTime').value);
+            const endTime = parseFloat(document.getElementById('endTime').value);
+            const sampleRate = audioBuffer.sampleRate;
+            const frameCount = Math.floor((endTime - startTime) * sampleRate);
+
+            if (frameCount <= 0) {
+                return alert("Invalid time range! Please adjust the sliders.");
+            }
+
+            const offlineCtx = new OfflineAudioContext(
+                audioBuffer.numberOfChannels,
+                frameCount,
+                sampleRate
+            );
+
+            const source = offlineCtx.createBufferSource();
+            const trimmedBuffer = offlineCtx.createBuffer(
+                audioBuffer.numberOfChannels,
+                frameCount,
+                sampleRate
+            );
+
+            // Copy the selected portion of audio to the new buffer
+            for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
+                trimmedBuffer.copyToChannel(
+                    audioBuffer.getChannelData(i).slice(startTime * sampleRate, endTime * sampleRate),
+                    i
+                );
+            }
+
+            source.buffer = trimmedBuffer;
+            source.connect(offlineCtx.destination);
+            source.start();
+
+            // Render and create the new WAV file
+            offlineCtx.startRendering().then(renderedBuffer => {
+                const wavBlob = bufferToWav(renderedBuffer);
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(wavBlob);
+                link.download = 'your-audio.wav';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }).catch((error) => {
+                alert("Error rendering audio: " + error);
+            });
+        });
+
+        // Create a WAV file from the AudioBuffer data
+        function bufferToWav(abuffer) {
+            const numOfChannels = abuffer.numberOfChannels;
+            const length = abuffer.length * numOfChannels * 2 + 44;
+            const buffer = new ArrayBuffer(length);
+            const view = new DataView(buffer);
+            const sampleRate = abuffer.sampleRate;
+            const channels = [];
+
+            let offset = 0, pos = 0;
+
+            // Write WAV header
+            writeString(view, pos, "RIFF");
+            pos += 4;
+            view.setUint32(pos, length - 8, true); // File size
+            pos += 4;
+            writeString(view, pos, "WAVE");
+            pos += 4;
+
+            // Write "fmt " chunk
+            writeString(view, pos, "fmt ");
+            pos += 4;
+            view.setUint32(pos, 16, true); // Subchunk size (16 for PCM)
+            pos += 4;
+            view.setUint16(pos, 1, true); // Audio format (1 = PCM)
+            pos += 2;
+            view.setUint16(pos, numOfChannels, true); // Number of channels
+            pos += 2;
+            view.setUint32(pos, sampleRate, true); // Sample rate
+            pos += 4;
+            view.setUint32(pos, sampleRate * numOfChannels * 2, true); // Byte rate
+            pos += 4;
+            view.setUint16(pos, numOfChannels * 2, true); // Block align
+            pos += 2;
+            view.setUint16(pos, 16, true); // Bits per sample
+            pos += 2;
+
+            // Write "data" chunk
+            writeString(view, pos, "data");
+            pos += 4;
+            view.setUint32(pos, length - 44, true); // Data chunk size
+            pos += 4;
+
+            // Write audio data
+            for (let i = 0; i < numOfChannels; i++) channels.push(abuffer.getChannelData(i));
+            while (pos < length) {
+                for (let i = 0; i < numOfChannels; i++) {
+                    let sample = Math.max(-1, Math.min(1, channels[i][offset])) * 32767;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        // Helper function to write strings to the DataView
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+
+    </script>
+
+
+<footer class="footer">
+    <a href="privacy.html">Privacy Policy</a> | 
+    <a href="terms.html">Terms of Service</a> |
+    © 2025
+
+</footer>
 
 </body>
 </html>
